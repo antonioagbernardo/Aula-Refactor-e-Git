@@ -49,7 +49,7 @@ public class GildedRose {
                     }
                 } else if (isConjured(item)) {
                     // Conjured items degrade twice as fast
-                    item.quality = item.quality + 1; // But for quality increase? Wait, adjust logic
+                    item.quality = item.quality + 1; // Mantido para não alterar comportamento original
                 } else if (isEternalArtifact(item)) {
                     // Increases quality over time, but slowly
                     if (item.sellIn % 2 == 0) {
@@ -79,7 +79,7 @@ public class GildedRose {
                         }
                     }
                 } else {
-                    item.quality = item.quality - item.quality;
+                    item.quality = 0;
                 }
             } else {
                 if (item.quality < 50) {
@@ -92,8 +92,12 @@ public class GildedRose {
             }
         }
 
-        // Ensure quality bounds
-        if (item.quality > 50 && !isSulfuras(item)) {
+        // Garantir limites de qualidade em um único lugar
+        clampQuality(item);
+    }
+
+    private void clampQuality(Item item) {
+        if (!isSulfuras(item) && item.quality > 50) {
             item.quality = 50;
         }
         if (item.quality < 0) {
